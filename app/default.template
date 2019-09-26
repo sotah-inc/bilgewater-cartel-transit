@@ -1,0 +1,16 @@
+upstream chronograf {
+  server ${DEST_HOSTNAME}:${DEST_PORT};
+}
+
+server {
+  listen       80;
+  server_name  ${HOSTNAME};
+
+  if ($http_x_forwarded_proto = "http") {
+    return 301 https://$host$request_uri;
+  }
+
+  location / {
+    proxy_pass http://chronograf;
+  }
+}
